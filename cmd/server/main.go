@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 
 	"github.com/snirkop89/go-restapi/internal/comment"
 	"github.com/snirkop89/go-restapi/internal/db"
+	transportHttp "github.com/snirkop89/go-restapi/internal/transport/http"
 )
 
 // Run - is responsible for the instantiation and startup
@@ -28,13 +28,10 @@ func Run() error {
 
 	cmtService := comment.NewService(db)
 
-	cmt, err := cmtService.PostComment(context.Background(), comment.Comment{
-		Slug:   "manual-test",
-		Author: "Johnny Cash",
-		Body:   "I hurt myself today",
-	})
-
-	log.Println(cmtService.GetComment(context.Background(), cmt.ID))
+	httpHandler := transportHttp.NewHandler(cmtService)
+	if err := httpHandler.Serve(); err != nil {
+		return err
+	}
 
 	return nil
 }
