@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
+	"github.com/snirkop89/go-restapi/internal/comment"
 	"github.com/snirkop89/go-restapi/internal/db"
 )
 
@@ -23,6 +25,9 @@ func Run() error {
 		log.Println("failed to migrate database")
 		return err
 	}
+
+	cmtService := comment.NewService(db)
+	log.Println(cmtService.GetComment(context.Background(), "71c5d074-b6cf-11ec-b909-0242ac120002"))
 
 	return nil
 }

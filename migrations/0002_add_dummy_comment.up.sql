@@ -1,0 +1,1 @@
+INSERT INTO comments (id) values ('71c5d074-b6cf-11ec-b909-0242ac120002')
