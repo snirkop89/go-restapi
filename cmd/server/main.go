@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/snirkop89/go-restapi/internal/db"
 )
@@ -14,21 +12,16 @@ import (
 func Run() error {
 	fmt.Println("starting our application")
 
-	var dbConn *db.Database
-	var err error
 	// give a few seconds for the postgres docker to start
-	for i := 0; i < 2; i++ {
-		dbConn, err = db.NewDatabase()
-		if err != nil {
-			log.Println("Failed to connect to the database")
-		}
-		time.Sleep(2 * time.Second)
-	}
+	db, err := db.NewDatabase()
 	if err != nil {
+		log.Println("Failed to connect to the database")
 		return err
 	}
-	if err := dbConn.Ping(context.Background()); err != nil {
-		log.Println(err)
+
+	if err := db.MigrateDB(); err != nil {
+		log.Println("failed to migrate database")
+		return err
 	}
 
 	return nil
